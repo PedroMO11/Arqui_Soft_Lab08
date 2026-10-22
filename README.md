@@ -1,68 +1,68 @@
 # Arqui_Soft_Lab08
 
-## Spotty — Plataforma de calificación automática sobre AWS Spot
+## Spotty — Automated Grading Platform on AWS Spot
 
-**Caso de Estudio #11 · Arquitectura de Software · UTEC 2026-II**
-**Team:** _completar_ · **Integrantes:** _completar_
+**Case Study #11 · Software Architecture · UTEC 2026-II**
+**Team:** _TBD_ · **Members:** _TBD_
 
-Hoy el curso de Arquitectura de Software califica las entregas de código de sus alumnos en un servidor local (una laptop), con un sandbox por alumno y workers (minions) que corrigen código y diagramas. Se quiere extender el sistema a todos los cursos usando únicamente instancias Spot de AWS para los sandboxes y workers.
+Today the Software Architecture course grades its students' code submissions on a local server (a laptop), with one sandbox per student and workers (minions) that grade code and diagrams. The goal is to extend the system to every course, using only AWS Spot instances for sandboxes and workers.
 
 ---
 
-## 1. Actores del sistema
+## 1. System actors
 
-| Actor | Tipo | Canal | Descripción |
+| Actor | Type | Channel | Description |
 |---|---|---|---|
-| **Alumno** | Usuario principal | App mobile | Entrega sus trabajos (código, diagramas, modelos) y consulta el estado y la nota de cada entrega. |
-| **Profesor** | Usuario principal | Web desktop | Crea las tareas de su curso cargando la rúbrica y la forma de evaluar la entrega del alumno, revisa el avance de la calificación y publica las notas como máximo 2 días después del deadline. **No necesita conocimientos técnicos ni configura infraestructura.** |
-| **Administrador de TI** | Usuario de soporte | Web desktop / dashboards | Prepara la imagen base de cada curso y define los recursos por tipo de curso (CPU, memoria, GPU, tiempo máximo). Gestiona el presupuesto, la capacidad Spot y la salud de la plataforma. |
-| **Worker / Minion** | Sistema interno | — | Ejecuta el código no confiable del alumno dentro de un sandbox aislado y genera el resultado de la evaluación. |
-| **AWS EC2 Spot** | Sistema externo | API de AWS | Provee las instancias para los workers. Puede reclamarlas con 2 minutos de aviso o quedarse sin capacidad del tipo pedido (sobre todo GPU). |
-| **Sistema académico de la universidad** | Sistema externo | API | Recibe las notas publicadas por el profesor. |
-| **Servicio de notificaciones push** | Sistema externo | FCM / APNs | Entrega las notificaciones de estado a la app mobile del alumno. |
-| **Proveedor LLM** | Sistema externo | API | Convierte la rúbrica del profesor en una evaluación ejecutable y ayuda a los workers a calificar criterios abiertos (diagramas, calidad de código). |
+| **Student** | Primary user | Mobile app | Submits their work (code, diagrams, models) and checks the status and grade of each submission. |
+| **Professor** | Primary user | Desktop web | Creates assignments for their course by providing the rubric and how the student's submission should be evaluated, tracks grading progress and publishes grades no later than 2 days after the deadline. **Needs no technical knowledge and never configures infrastructure.** |
+| **IT Administrator** | Support user | Desktop web / dashboards | Prepares the base image for each course and defines resources per course type (CPU, memory, GPU, max time). Manages the budget, Spot capacity and platform health. |
+| **Worker / Minion** | Internal system | — | Runs the student's untrusted code inside an isolated sandbox and produces the evaluation result. |
+| **AWS EC2 Spot** | External system | AWS API | Provides the worker instances. It can reclaim them with a 2-minute notice or run out of capacity for the requested type (especially GPU). |
+| **University academic system** | External system | API | Receives the grades published by the professor. |
+| **Push notification service** | External system | FCM / APNs | Delivers status notifications to the student's mobile app. |
+| **LLM provider** | External system | API | Turns the professor's rubric into an executable evaluation and helps workers grade open-ended criteria (diagrams, code quality). |
 
 ---
 
-## 2. Requerimientos funcionales
+## 2. Functional requirements
 
-| ID | Actor | Requerimiento |
+| ID | Actor | Requirement |
 |---|---|---|
-| **RF-01** | Alumno | El sistema debe permitir al alumno subir una entrega (código, diagramas o notebooks/modelos) para una tarea abierta, rechazándola si el deadline ya pasó o si superó los intentos máximos. |
-| **RF-02** | Alumno | El sistema debe permitir al alumno consultar desde la app mobile el estado de cada entrega (`EN COLA`, `EJECUTANDO`, `REINTENTANDO`, `CALIFICADO`, `ERROR`), junto con su nota y feedback, y notificarle cada cambio por push. |
-| **RF-03** | Profesor | El sistema debe permitir al profesor crear una tarea mediante un formulario guiado, indicando solo el deadline, su **rúbrica** (criterios y puntajes) y la **forma de evaluar** la entrega (por ejemplo, casos de prueba con entrada y salida esperada, una solución de referencia o una lista de verificación para diagramas). Un LLM transforma la rúbrica en una evaluación ejecutable que el profesor aprueba con una vista previa. Los recursos y la imagen base se asignan automáticamente según el tipo de curso. |
-| **RF-04** | Sistema | El sistema debe ejecutar y calificar cada entrega en un sandbox aislado con la imagen base del curso (con tests y, para criterios abiertos, apoyo de un LLM), y reintentarla automáticamente si AWS reclama la instancia, sin que el alumno vuelva a entregar. |
-| **RF-05** | Profesor | El sistema debe mostrar al profesor el avance de calificación de cada tarea (calificadas, en cola, con error, tiempo estimado) y permitirle publicar las notas en el sistema académico. |
+| **FR-01** | Student | The system must let the student upload a submission (code, diagrams or notebooks/models) for an open assignment, rejecting it if the deadline has passed or the maximum number of attempts was exceeded. |
+| **FR-02** | Student | The system must let the student check from the mobile app the status of each submission (`QUEUED`, `RUNNING`, `RETRYING`, `GRADED`, `ERROR`), together with its grade and feedback, and notify every change through a push notification. |
+| **FR-03** | Professor | The system must let the professor create an assignment through a guided form, providing only the deadline, the **rubric** (criteria and points) and **how to evaluate** the submission (for example, test cases with expected input and output, a reference solution or a checklist for diagrams). An LLM turns the rubric into an executable evaluation that the professor approves through a preview. Resources and the base image are assigned automatically according to the course type. |
+| **FR-04** | System | The system must run and grade each submission in an isolated sandbox with the course's base image (with tests and, for open-ended criteria, the help of an LLM), and retry it automatically if AWS reclaims the instance, without the student having to resubmit. |
+| **FR-05** | Professor | The system must show the professor the grading progress of each assignment (graded, queued, failed, estimated time) and let them publish the grades to the academic system. |
 
 ---
 
-## 3. Requerimientos no funcionales
+## 3. Non-functional requirements
 
-| ID | Atributo | Requerimiento | Métrica |
+| ID | Attribute | Requirement | Metric |
 |---|---|---|---|
-| **RNF-01** | Performance | Cada entrega debe calificarse dentro del P99 de su tipo de curso: **Programación ≤ 1 min**, **Arquitectura ≤ 10 min**, **IA ≤ 40 min** de ejecución. | P99 desde la entrega hasta el resultado, por tipo de curso |
-| **RNF-02** | Escalabilidad | El sistema debe absorber el pico de entregas de los **últimos 30 minutos antes del deadline** escalando los workers según la cola, sin que los cursos con más alumnos degraden a los cursos pequeños. | P99 por curso durante la ventana de deadline |
-| **RNF-03** | Reliability | Ninguna entrega debe perderse por una interrupción Spot (aviso de 2 minutos) o por falta de capacidad, y el 100 % de las notas deben estar listas antes de **deadline + 48 horas**. | `% jobs con nota / jobs recibidos = 100 %` · `% notas listas a las 48 h = 100 %` |
-| **RNF-04** | Seguridad | El código del alumno es **no confiable**: debe ejecutarse sin acceso a la red, a credenciales ni a otros sandboxes, con límites duros de CPU, **memoria** y tiempo, de modo que un código ineficiente solo afecte su propia ejecución. | 100 % de la suite de código malicioso bloqueada |
-| **RNF-05** | Costo | Los workers y sandboxes deben ejecutarse **únicamente en instancias Spot** de AWS, usando GPU solo para las ejecuciones que la necesiten. | % de cómputo de workers en Spot = 100 % |
+| **NFR-01** | Performance | Each submission must be graded within the P99 of its course type: **Programming ≤ 1 min**, **Architecture ≤ 10 min**, **AI ≤ 40 min** of execution. | P99 from submission to result, per course type |
+| **NFR-02** | Scalability | The system must absorb the submission peak of the **last 30 minutes before the deadline** by scaling workers based on the queue, without large courses degrading small ones. | P99 per course during the deadline window |
+| **NFR-03** | Reliability | No submission may be lost because of a Spot interruption (2-minute notice) or lack of capacity, and 100 % of submissions must be graded within **24 hours** of the deadline, leaving a buffer before the professor's **48-hour** limit. | `% jobs graded / jobs received = 100 %` · `% submissions graded within 24 h = 100 %` |
+| **NFR-04** | Security | The student's code is **untrusted**: it must run without access to the network, credentials or other sandboxes, with hard limits on CPU, **memory** and time, so that inefficient code only affects its own execution. | 100 % of the malicious-code test suite blocked |
+| **NFR-05** | Cost | Workers and sandboxes must run **only on AWS Spot instances**, using GPU only for the executions that need it. | % of worker compute on Spot = 100 % |
 
 ---
 
-## 4. Restricciones y supuestos
+## 4. Constraints and assumptions
 
-**Restricciones del enunciado**
+**Constraints from the case statement**
 
-- Solo instancias **Spot** para sandboxes y workers. AWS puede reclamarlas con **2 minutos de aviso** o quedarse sin capacidad, y las de GPU son las más escasas.
-- Cada curso tiene su propia **imagen base de 3 a 5 GB**.
-- El uso **no es constante**: casi todas las entregas llegan en los últimos 30 minutos antes del deadline.
-- Algunos alumnos entregan código ineficiente o que consume mucha memoria.
-- Los profesores tienen como máximo **2 días** para entregar las notas.
+- Only **Spot** instances for sandboxes and workers. AWS can reclaim them with a **2-minute notice** or run out of capacity, and GPU instances are the scarcest.
+- Each course has its own **base image of 3 to 5 GB**.
+- Usage is **not constant**: almost all submissions arrive in the last 30 minutes before the deadline.
+- Some students submit inefficient or memory-hungry code.
+- Professors have at most **2 days** to deliver grades.
 
-**Supuestos (pendientes de confirmar con el profesor)**
+**Assumptions (to be confirmed with the professor)**
 
-- ~10 000 alumnos y ~300 secciones con entregables. Peor caso: varias tareas con el mismo deadline.
-- El plazo de 2 días se cuenta desde el deadline de la tarea.
-- La restricción Spot solo aplica a workers y sandboxes; el API, la base de datos y las colas pueden usar servicios gestionados.
-- El sandbox no necesita acceso a internet: las dependencias vienen dentro de la imagen base del curso.
-- Los deadlines se conocen con anticipación.
-- El profesor no configura infraestructura: TI prepara la imagen base de cada curso y la plataforma asigna los recursos según el tipo de curso (Programación, Arquitectura o IA).
+- ~10,000 students and ~300 sections with deliverables. Worst case: several assignments with the same deadline.
+- The 2-day window starts at the assignment deadline.
+- The Spot constraint only applies to workers and sandboxes; the API, database and queues can use managed services.
+- The sandbox needs no internet access: dependencies are included in the course's base image.
+- Deadlines are known in advance.
+- The professor never configures infrastructure: IT prepares each course's base image and the platform assigns resources by course type (Programming, Architecture or AI).
