@@ -1,4 +1,4 @@
-# Luis Torres - Jefe de Práctica
+# Luis Torres - Teaching Assistant
 
 ## Rol
 Jefe de práctica de Programación II y Arquitectura de Software. Es el enlace técnico del

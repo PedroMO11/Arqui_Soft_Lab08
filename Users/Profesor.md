@@ -1,4 +1,4 @@
-# Martín Paredes - Profesor
+# Martín Paredes - Professor
 
 ## Rol
 Profesor de Programación I, uno de los cursos con más demanda de la universidad (600 alumnos en

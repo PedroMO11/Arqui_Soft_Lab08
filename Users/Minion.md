@@ -1,4 +1,4 @@
-# Minion - Evaluador LLM
+# Minion - LLM Evaluator
 
 ## Rol
 Actor de sistema externo. Cada minion es un agente LLM que corre en una API externa y evalúa una
@@ -34,5 +34,5 @@ llama.
 
 ## Qué le da el sistema
 - Rate Limiter y Circuit Breaker que lo protegen de picos y aíslan sus caídas.
-- Cola de evaluación que acumula outputs listos, de modo que sus demoras no retienen workers Spot.
+- Evaluation Queue que acumula outputs listos, de modo que sus demoras no retienen workers Spot.
 - Criterios objetivos resueltos con tests, de modo que solo evalúa lo que un test no puede medir.

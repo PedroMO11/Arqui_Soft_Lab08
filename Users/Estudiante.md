@@ -1,4 +1,4 @@
-# Diego Huamán - Estudiante
+# Diego Huamán - Student
 
 ## Rol
 Estudiante de tercer año que lleva Programación II e Inteligencia Artificial en el mismo ciclo.

@@ -1,4 +1,4 @@
-# Worker - Ejecutor de sandboxes en Spot
+# Worker - Spot Sandbox Executor
 
 ## Rol
 Actor de sistema. Cada worker es una instancia Spot de un pool (Programación, Arquitectura o IA)
@@ -14,7 +14,7 @@ del Minion Orchestrator.
 3. Descarga la entrega de Artifact Storage y los tests ocultos de Rubric Storage.
 4. Ejecuta la entrega y los tests en un sandbox sin red, con los límites de memoria, CPU y
    timeout de la plantilla.
-5. Publica el output de ejecución en la Cola de evaluación junto con sus señales de ejecución
+5. Publica el output de ejecución en la Evaluation Queue junto con sus señales de ejecución
    (reintentos por infra, tests que cambian de resultado al repetirse, output truncado, uso de
    memoria o tiempo sobre el 90 % del límite) y libera el sandbox. A partir de ahí el job ya no
    depende del worker. Esas señales bajan la confianza de la nota y pueden mandarla a revisión

@@ -1,4 +1,4 @@
-# Jorge Salas - Administrador TI
+# Jorge Salas - IT Administrator
 
 ## Rol
 Responsable de la infraestructura cloud de la universidad y del budget de cómputo. Aprobó el uso
