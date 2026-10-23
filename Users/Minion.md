@@ -33,6 +33,10 @@ llama.
 - Puede ser manipulado por el contenido del alumno (prompt injection).
 
 ## Qué le da el sistema
-- Rate Limiter y Circuit Breaker que lo protegen de picos y aíslan sus caídas.
+- Prompt Injection Guard, Rate Limiter y Circuit Breaker, que filtran el contenido del alumno, lo
+  protegen de picos y aíslan sus caídas.
+- Output Validator (JSON Schema) que valida su respuesta antes de usarla, y Response Cache que
+  evita repetir llamadas para una reentrega idéntica.
+- Rubric Compiler Service, el único que le pide compilar la rúbrica, una vez por evaluación.
 - Evaluation Queue que acumula outputs listos, de modo que sus demoras no retienen workers Spot.
 - Criterios objetivos resueltos con tests, de modo que solo evalúa lo que un test no puede medir.
