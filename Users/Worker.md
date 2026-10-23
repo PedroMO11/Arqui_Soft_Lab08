@@ -12,7 +12,7 @@ del Minion Orchestrator.
    pools separados: Programming Workers, Architecture Workers, AI Smoke Workers (CPU, cada intento
    de IA) y AI GPU Workers (solo la entrega final de IA).
 2. Pide un job al Scheduler y recibe un lease (3 min en Programación, 20 min en Arquitectura,
-   heartbeat cada 60 s en IA).
+   10 min en AI Smoke, heartbeat cada 60 s en AI GPU).
 3. Descarga la entrega de Artifact Storage y los tests ocultos de Rubric Storage.
 4. Ejecuta la entrega y los tests en un sandbox sin red, con los límites de memoria, CPU y
    timeout de la plantilla.
