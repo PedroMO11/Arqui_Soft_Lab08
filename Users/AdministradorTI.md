@@ -29,6 +29,9 @@ por el costo mensual frente a la dirección académica.
   incumplimiento de SLO antes que los profesores.
 - Necesita que el código no confiable de los alumnos no pueda acceder a la red interna ni a
   credenciales de AWS.
+- Necesita una sola entrada (WAF y API Gateway) para todos los clientes, para aplicar filtrado,
+  autenticación y rate limiting en un solo lugar.
+- Necesita que la GPU, el recurso Spot más escaso, solo procese entregas finales de IA.
 
 ## Pain points actuales
 - Un solo servidor local (una laptop) es un SPOF y no escala al resto de cursos (físico).
@@ -40,4 +43,6 @@ por el costo mensual frente a la dirección académica.
 - Environment Catalog con Image Builder: una plantilla aprobada genera la imagen de cada curso.
 - Workers 100 % Spot con diversificación de tipos, zonas y regiones.
 - Dashboard y alertas de cola, ETA, interrupciones y costo.
+- WAF y API Gateway como única entrada, y smoke tests de IA en CPU que reservan la GPU para las
+  entregas finales.
 - Sandboxes aislados sin red ni credenciales, con límites definidos en la plantilla.

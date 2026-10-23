@@ -16,7 +16,8 @@ notas. Tiene como máximo 2 días desde la fecha límite para entregar las notas
 4. La noche de la fecha límite casi todas las entregas llegan en los últimos 30 minutos.
 5. A la mañana siguiente revisa en el dashboard cuántas entregas están corregidas, cuántas siguen
    en espera y la hora estimada de término.
-6. Exporta las notas con el puntaje por criterio y las publica antes de que venzan las 48 h.
+6. Exporta las notas con el puntaje por criterio y las publica antes de que venzan las 48 h. Al
+   publicarlas llegan solas al sistema académico de la universidad (SIS), sin transcribirlas.
 
 ## Necesidades
 - Necesita que la rúbrica sea lo único que debe entregar, para no depender de conocimientos de
@@ -43,6 +44,7 @@ notas. Tiene como máximo 2 días desde la fecha límite para entregar las notas
 - Evaluaciones creadas solo con enunciado, rúbrica, fecha límite y una plantilla del catálogo.
 - Corrección completa en menos de 24 h, con avance y ETA por evaluación.
 - Nota por criterio, timestamp de recepción y output de cada entrega, exportables.
+- Publicación directa de las notas al sistema académico (SIS), con reintento si el SIS no responde.
 
 ## Qué no puede hacer
 - Modificar workers, minions, sandboxes, imágenes o límites de ejecución. Esos los define el

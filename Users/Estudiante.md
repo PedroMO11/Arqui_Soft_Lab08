@@ -11,9 +11,12 @@ desde la app mobile, normalmente en los minutos previos y posteriores a la fecha
 2. Termina su tarea de IA 15 minutos antes de la fecha límite y la sube desde la web.
 3. Recibe un comprobante con la hora de recepción.
 4. Desde la app mobile revisa el estado de su entrega: En espera, En ejecución, En revisión (un
-   jefe de práctica está validando la nota) o Corregido.
-5. Recibe una push notification cuando la entrega pasa a Corregido.
-6. Abre el output de la corrección: nota por criterio de la rúbrica, tests aprobados y fallidos,
+   jefe de práctica está validando la nota), Corregido o Error (la corrección falló por la
+   plataforma y TI ya fue alertado).
+5. En IA, cada intento antes de la fecha límite le devuelve en minutos un smoke test en CPU, y
+   solo su entrega final se ejecuta en GPU.
+6. Recibe una push notification cuando la entrega pasa a Corregido.
+7. Abre el output de la corrección: nota por criterio de la rúbrica, tests aprobados y fallidos,
    stdout/stderr y, si falló por falta de memoria o timeout, la causa.
 
 ## Necesidades
@@ -34,9 +37,10 @@ desde la app mobile, normalmente en los minutos previos y posteriores a la fecha
 
 ## Qué le da el sistema
 - Entrega desde la web (desktop) con comprobante y timestamp de recepción en menos de 2 s.
-- Estado de la entrega en la web o la app (En espera, En ejecución, En revisión, Corregido) y
+- Estado de la entrega en la web o la app (En espera, En ejecución, En revisión, Corregido, Error) y
   push notification al pasar a Corregido.
 - Una nota dudosa nunca se publica sin que un jefe de práctica la revise.
 - Retry automático ante interrupciones Spot, sin consumir intentos del alumno.
+- Feedback rápido de cada intento de IA con un smoke test en CPU, sin esperar GPU.
 - Output final de la corrección: nota por criterio, resultado por test, stdout/stderr y causa del
   fallo.
